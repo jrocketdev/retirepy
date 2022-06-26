@@ -1,0 +1,13 @@
+# Core
+pydantic
+numpy
+pandas
+
+# Dev
+jupyterlab
+matplotlib
+black
+
+# Testing
+pytest
+
