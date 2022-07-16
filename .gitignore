@@ -131,4 +131,7 @@ dmypy.json
 # Pycharm
 .idea/
 
+# Pycharm
+.idea/
+
 _scratch/
