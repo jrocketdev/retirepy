@@ -10,4 +10,5 @@ black
 
 # Testing
 pytest
-
+requests
+lxml
