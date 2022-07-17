@@ -17,39 +17,30 @@ def compute_compound_interest(
 
 
 def compute_future_value_series(
-    start_month: dt.date,
-    end_month: dt.date,
+    num_months: int,
     principal_investment: float,
     annual_interest_rate: float,
     compounding_frequency: Frequency,
     contribution_amount: float,
     contribution_frequency: Frequency,
     contribution_at_start_of_compound_period: bool = True,
-) -> pd.Series:
+) -> np.ndarray:
     """Return Future Value for entire date range
 
     https://www.vertex42.com/Calculators/compound-interest-calculator.html#calculator
     """
-    return_series = pd.Series(
-        data=np.nan,
-        index=pd.date_range(
-            start=start_month,
-            end=end_month,
-            freq="MS",  # Month Start Frequency
-        ),
-    )
-    return_series.iloc[0] = principal_investment
+    month_range = np.arange(0, num_months)
+    month_value = (month_range % 12) + 1
+    future_value = np.zeros(num_months)
+    future_value[0] = principal_investment
 
     compound_interest = compute_compound_interest(
         annual_interest_rate=annual_interest_rate,
         compounding_frequency=compounding_frequency,
     )
 
-    current_value = np.nan
-    for iloc, month in enumerate(return_series.index.month):
-        if iloc == 0:
-            current_value = principal_investment
-            continue
+    current_value = principal_investment
+    for iloc, month in enumerate(month_value[1:]):
         contribute = month in contribution_frequency.meta.trigger_months
 
         if contribute and contribution_at_start_of_compound_period:
@@ -65,6 +56,6 @@ def compute_future_value_series(
             # Time to add a contribution
             current_value += contribution_amount
 
-        return_series.iloc[iloc] = current_value
+        future_value[iloc + 1] = current_value
 
-    return return_series
+    return future_value

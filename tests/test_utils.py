@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 from pathlib import Path
 from retirepy.models import Frequency
-from retirepy.utils import compute_future_value_series
+from retirepy.future_value import compute_future_value_series
 
 
 class TestComputeFutureValueSeries:
@@ -16,8 +16,7 @@ class TestComputeFutureValueSeries:
             "name": "monthly compounding interest with no contribution",
             "link": "https://www.thecalculatorsite.com/compound?a=12000&p=7&pp=yearly&y=1&m=0&rd=0&rp=monthly&rt=deposit&rw=0&rwp=1m&rm=beginning&ci=monthly&ip=&c=1&di=",
             "input": dict(
-                start_month=pd.Timestamp(year=2022, month=1, day=1),
-                end_month=pd.Timestamp(year=2022 + 1, month=1, day=1),
+                num_months=12 + 1,
                 principal_investment=12000.0,
                 annual_interest_rate=0.07,
                 compounding_frequency=Frequency.MONTHLY,
@@ -31,8 +30,7 @@ class TestComputeFutureValueSeries:
             "name": "monthly compounding interest with monthly contribution at start of period",
             "link": "https://www.thecalculatorsite.com/compound?a=12000&p=7&pp=yearly&y=1&m=0&rd=100&rp=monthly&rt=deposit&rw=0&rwp=1m&rm=beginning&ci=monthly&ip=&c=1&di=",
             "input": dict(
-                start_month=pd.Timestamp(year=2022, month=1, day=1),
-                end_month=pd.Timestamp(year=2022 + 1, month=1, day=1),
+                num_months=12 + 1,
                 principal_investment=12000.0,
                 annual_interest_rate=0.07,
                 compounding_frequency=Frequency.MONTHLY,
@@ -46,8 +44,7 @@ class TestComputeFutureValueSeries:
             "name": "monthly compounding interest with monthly contribution at end of period",
             "link": "https://www.thecalculatorsite.com/compound?a=12000&p=7&pp=yearly&y=1&m=0&rd=100&rp=monthly&rt=deposit&rw=0&rwp=1m&rm=end&ci=monthly&ip=&c=1&di=",
             "input": dict(
-                start_month=pd.Timestamp(year=2022, month=1, day=1),
-                end_month=pd.Timestamp(year=2022 + 1, month=1, day=1),
+                num_months=12 + 1,
                 principal_investment=12000.0,
                 annual_interest_rate=0.07,
                 compounding_frequency=Frequency.MONTHLY,
@@ -61,8 +58,7 @@ class TestComputeFutureValueSeries:
             "name": "yearly compounding interest with no contribution",
             "link": "https://www.thecalculatorsite.com/compound?a=12000&p=7&pp=yearly&y=10&m=0&rd=0&rp=monthly&rt=deposit&rw=0&rwp=1m&rm=beginning&ci=yearly&ip=&c=1&di=",
             "input": dict(
-                start_month=pd.Timestamp(year=2022, month=1, day=1),
-                end_month=pd.Timestamp(year=2022 + 10, month=1, day=1),
+                num_months=12 * 10 + 1,
                 principal_investment=12000.0,
                 annual_interest_rate=0.07,
                 compounding_frequency=Frequency.YEARLY,
@@ -76,8 +72,7 @@ class TestComputeFutureValueSeries:
             "name": "yearly compounding interest with yearly contribution at start of period",
             "link": "https://www.thecalculatorsite.com/compound?a=12000&p=7&pp=yearly&y=10&m=0&rd=100&rp=yearly&rt=deposit&rw=0&rwp=1m&rm=beginning&ci=yearly&ip=&c=1&di=",
             "input": dict(
-                start_month=pd.Timestamp(year=2022, month=1, day=1),
-                end_month=pd.Timestamp(year=2022 + 10, month=1, day=1),
+                num_months=12 * 10 + 1,
                 principal_investment=12000.0,
                 annual_interest_rate=0.07,
                 compounding_frequency=Frequency.YEARLY,
@@ -91,8 +86,7 @@ class TestComputeFutureValueSeries:
             "name": "yearly compounding interest with monthly contribution at start of period",
             "link": "https://www.thecalculatorsite.com/compound?a=12000&p=7&pp=yearly&y=10&m=0&rd=100&rp=monthly&rt=deposit&rw=0&rwp=1m&rm=beginning&ci=yearly&ip=&c=1&di=",
             "input": dict(
-                start_month=pd.Timestamp(year=2022, month=1, day=1),
-                end_month=pd.Timestamp(year=2022 + 10, month=1, day=1),
+                num_months=12 * 10 + 1,
                 principal_investment=12000.0,
                 annual_interest_rate=0.07,
                 compounding_frequency=Frequency.YEARLY,
@@ -113,18 +107,29 @@ class TestComputeFutureValueSeries:
         self, request, input_dict: dict, expected_output: float, check_link: str
     ):
         fv_series = compute_future_value_series(**input_dict)
-        print(fv_series)
         fail_msg = f"Failed, check link: {check_link}"
         try:
             assert (fv_series[-1]).round(2) == expected_output, fail_msg
         except:
-            data_dir = Path(__file__).parent / 'data'
-            data_fname = '_'.join(request.node.callspec.id.split()) + '.csv'
+            data_dir = Path(__file__).parent / "data"
+            data_fname = "_".join(request.node.callspec.id.split()) + ".csv"
             data_fpath = data_dir / data_fname
             if data_fpath.exists():
                 df = pd.read_csv(data_fpath)
-                print(df)
+
+                print(fv_series)
+                print(df["Balance"].values)
+
+                comparison_df = pd.DataFrame(
+                    data={
+                        "actual_balance": fv_series,
+                        "expected_balance": df["Balance"].values,
+                    },
+                    index=df.index,
+                )
+                print(comparison_df)
+
                 # TODO: Compare expected to actual
             else:
-                print('Unable to find csv file with expected data')
+                print("Unable to find csv file with expected data")
             raise
