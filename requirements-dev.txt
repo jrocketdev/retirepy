@@ -12,3 +12,8 @@ black
 pytest
 requests
 lxml
+
+# Web Parsing for Test Data
+selenium
+html5lib
+webdriver_manager
