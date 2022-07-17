@@ -1,5 +1,6 @@
 import pytest
 import pandas as pd
+from pathlib import Path
 from retirepy.models import Frequency
 from retirepy.utils import compute_future_value_series
 
@@ -114,4 +115,16 @@ class TestComputeFutureValueSeries:
         fv_series = compute_future_value_series(**input_dict)
         print(fv_series)
         fail_msg = f"Failed, check link: {check_link}"
-        assert (fv_series[-1]).round(2) == expected_output, fail_msg
+        try:
+            assert (fv_series[-1]).round(2) == expected_output, fail_msg
+        except:
+            data_dir = Path(__file__).parent / 'data'
+            data_fname = '_'.join(request.node.callspec.id.split()) + '.csv'
+            data_fpath = data_dir / data_fname
+            if data_fpath.exists():
+                df = pd.read_csv(data_fpath)
+                print(df)
+                # TODO: Compare expected to actual
+            else:
+                print('Unable to find csv file with expected data')
+            raise
