@@ -29,10 +29,18 @@ def compute_future_value_series(
 
     https://www.vertex42.com/Calculators/compound-interest-calculator.html#calculator
     """
+    # Initialize Months
     month_range = np.arange(0, num_months)
-    month_value = (month_range % 12) + 1
-    future_value = np.zeros(num_months)
-    future_value[0] = principal_investment
+    month_arr = (month_range % 12) + 1
+
+    # Initialize FV array
+    future_value_arr = np.zeros(num_months)
+    future_value_arr[0] = principal_investment
+
+    # Initialize Input Array
+    deposits_arr = np.zeros(num_months)
+    add_deposit_arr = np.isin(month_arr, contribution_frequency.meta.trigger_months)
+    deposits_arr[add_deposit_arr] = contribution_amount
 
     compound_interest = compute_compound_interest(
         annual_interest_rate=annual_interest_rate,
@@ -40,22 +48,21 @@ def compute_future_value_series(
     )
 
     current_value = principal_investment
-    for iloc, month in enumerate(month_value[1:]):
-        contribute = month in contribution_frequency.meta.trigger_months
-
-        if contribute and contribution_at_start_of_compound_period:
+    iter_arr = np.vstack((month_arr, deposits_arr)).T[1:]
+    for iloc, (month, deposit) in enumerate(iter_arr):
+        if contribution_at_start_of_compound_period:
             # Time to add a contribution
-            current_value += contribution_amount
+            current_value += deposit
 
         # Compound Interest if needed
         if month in compounding_frequency.meta.trigger_months:
             # Time to compound
             current_value *= compound_interest
 
-        if contribute and not contribution_at_start_of_compound_period:
+        if not contribution_at_start_of_compound_period:
             # Time to add a contribution
-            current_value += contribution_amount
+            current_value += deposit
 
-        future_value[iloc + 1] = current_value
+        future_value_arr[iloc + 1] = current_value
 
-    return future_value
+    return future_value_arr
