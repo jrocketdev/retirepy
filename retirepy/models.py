@@ -95,3 +95,6 @@ class CompoundingFrequency(str, Enum):
             "Monthly": MONTHLY_COMPOUNDING_META,
             "Yearly": YEARLY_COMPOUNDING_META,
         }[self.value]
+
+
+OccurrenceFrequency = CompoundingFrequency

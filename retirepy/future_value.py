@@ -29,10 +29,10 @@ def compute_compound_interest(
 def compute_future_value_series(
     num_months: int,
     principal_investment: float,
-    annual_interest_rate: float,
-    compounding_frequency: CompoundingFrequency | str,
-    contribution_amount: float,
-    contribution_frequency: ContributionFrequency | str,
+    annual_interest_rate: float = 0.0,
+    compounding_frequency: CompoundingFrequency | str = CompoundingFrequency.YEARLY,
+    contribution_amount: float = 0.0,
+    contribution_frequency: ContributionFrequency | str = ContributionFrequency.MONTHLY,
     contribution_at_start_of_compound_period: bool = True,
 ) -> np.ndarray:
     """Return Future Value for entire date range
