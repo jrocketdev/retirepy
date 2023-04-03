@@ -6,50 +6,51 @@ build-backend = "hatchling.build"
 name = "retirepy"
 description = ''
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 license = "MIT"
 keywords = []
 authors = [
-  { name = "Jonathan Rogers", email = "Jonathan.W.Rogers@gmail.com" },
+    { name = "Jonathan Rogers", email = "Rogers_Jonathan_W@solarturbines.com" },
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "pydantic>=1.9.1,<2.0",
-  "numpy>=1.23.1,<2.0",
-  "pandas>=1.4.3,<2.0"
+    "pydantic",
+    "numpy",
+    "pandas"
 ]
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/jrocketdev/retirepy#readme"
-Issues = "https://github.com/jrocketdev/retirepy/issues"
-Source = "https://github.com/jrocketdev/retirepy"
+Documentation = "https://github.com/unknown/retirepy#readme"
+Issues = "https://github.com/unknown/retirepy/issues"
+Source = "https://github.com/unknown/retirepy"
 
 [tool.hatch.version]
 path = "src/retirepy/__about__.py"
 
-[tool.hatch.build]
-sources = ["src"]
-only-packages = true
-
 [tool.hatch.envs.default]
 dependencies = [
-  "pytest",
-  "pytest-cov",
-  "requests",
-  "lxml"
+    "pytest",
+    "pytest-cov",
+    "jupyterlab",
+    "matplotlib",
+    "black",
+    "requests",
+    "lxml",
+    "selenium",
+    "html5lib",
+    "webdriver_manager",
+    "h2o-wave",
 ]
 [tool.hatch.envs.default.scripts]
+tests = "pytest tests/"
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=retirepy --cov=tests {args}"
 no-cov = "cov --no-cov {args}"
 
@@ -60,12 +61,12 @@ python = ["37", "38", "39", "310", "311"]
 branch = true
 parallel = true
 omit = [
-  "retirepy/__about__.py",
+    "retirepy/__about__.py",
 ]
 
 [tool.coverage.report]
 exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
 ]
