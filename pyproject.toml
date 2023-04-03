@@ -21,16 +21,16 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "pydantic",
-    "numpy",
-    "pandas"
+    "pydantic>=1.9.1,<2.0",
+    "numpy>=1.23.1,<2.0",
+    "pandas>=1.4.3,<2.0"
 ]
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/unknown/retirepy#readme"
-Issues = "https://github.com/unknown/retirepy/issues"
-Source = "https://github.com/unknown/retirepy"
+Documentation = "https://github.com/jrocketdev/retirepy#readme"
+Issues = "https://github.com/jrocketdev/retirepy/issues"
+Source = "https://github.com/jrocketdev/retirepy"
 
 [tool.hatch.version]
 path = "src/retirepy/__about__.py"
