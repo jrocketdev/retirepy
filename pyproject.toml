@@ -36,6 +36,8 @@ Source = "https://github.com/jrocketdev/retirepy"
 path = "src/retirepy/__about__.py"
 
 [tool.hatch.envs.default]
+python = "310"
+path = "venv"
 dependencies = [
     "pytest",
     "pytest-cov",
@@ -49,13 +51,14 @@ dependencies = [
     "webdriver_manager",
     "h2o-wave",
 ]
+
 [tool.hatch.envs.default.scripts]
 tests = "pytest tests/"
 cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=retirepy --cov=tests {args}"
 no-cov = "cov --no-cov {args}"
 
 [[tool.hatch.envs.test.matrix]]
-python = ["37", "38", "39", "310", "311"]
+python = ["310", "311"]
 
 [tool.coverage.run]
 branch = true
